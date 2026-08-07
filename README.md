@@ -1,9 +1,12 @@
 # ML Assignment 2 — Classification Models + Streamlit Deployment
 
+***BITSID:*** 2025AC05134
+
+***NAME:*** Ashish Bhalotiya
+
 **Course:** Machine Learning  
+
 **Programme:** M.Tech AIML / DSE — Work Integrated Learning Programmes Division, BITS Pilani  
-**Assignment:** Assignment 2 (Total: 15 marks)  
-**Submission Deadline:** 18 August 2026, 23:59 IST
 
 ---
 
