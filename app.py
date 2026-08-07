@@ -96,7 +96,14 @@ def render_sidebar() -> str:
     )
     st.sidebar.markdown("---")
     st.sidebar.subheader("Feature b) Model selection")
-    return st.sidebar.selectbox("Choose a trained model", list(MODEL_FILES.keys()))
+    selected = st.sidebar.selectbox("Choose a trained model", list(MODEL_FILES.keys()))
+    st.sidebar.markdown("---")
+    st.sidebar.markdown(
+        "**Links**  \n"
+        "- [GitHub repo](https://github.com/2025AC05134/ml-assignment)  \n"
+        "- [Live app](https://ktj8kplauyhkepkvphpk2r.streamlit.app/)"
+    )
+    return selected
 
 
 def render_upload_section() -> pd.DataFrame | None:
@@ -138,7 +145,7 @@ def render_single_model_view(models: dict, selected_model_name: str, x_eval, y_e
             for k in METRIC_ORDER
         ]
     )
-    st.dataframe(metrics_df, use_container_width=True)
+    st.dataframe(metrics_df, width="stretch")
 
     st.subheader("Feature d) Confusion matrix & classification report")
     left, right = st.columns([1, 1])
@@ -150,7 +157,7 @@ def render_single_model_view(models: dict, selected_model_name: str, x_eval, y_e
             index=["Actual: ≤50K (0)", "Actual: >50K (1)"],
             columns=["Predicted: ≤50K (0)", "Predicted: >50K (1)"],
         )
-        st.dataframe(cm_df, use_container_width=True)
+        st.dataframe(cm_df, width="stretch")
     with right:
         st.markdown("**Classification report**")
         report = classification_report(y_eval, y_pred, digits=4)
@@ -177,7 +184,7 @@ def render_all_models_view(models: dict, x_eval, y_eval) -> None:
     styled = comparison_df.style.format({m: "{:.4f}" for m in METRIC_ORDER})
     for metric in METRIC_ORDER:
         styled = styled.highlight_max(subset=[metric], color="#c8f7c5")
-    st.dataframe(styled, use_container_width=True)
+    st.dataframe(styled, width="stretch")
 
     st.download_button(
         label="Download comparison as CSV",
@@ -198,7 +205,7 @@ def render_all_models_view(models: dict, x_eval, y_eval) -> None:
                 index=["≤50K", ">50K"],
                 columns=["Pred ≤50K", "Pred >50K"],
             )
-            st.dataframe(cm_df, use_container_width=True)
+            st.dataframe(cm_df, width="stretch")
 
     winner_row = comparison_df.loc[comparison_df["Accuracy"].idxmax()]
     st.success(

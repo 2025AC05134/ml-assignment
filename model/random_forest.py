@@ -21,9 +21,9 @@ def build_pipeline() -> Pipeline:
             (
                 "classifier",
                 RandomForestClassifier(
-                    n_estimators=200,
-                    max_depth=16,
-                    min_samples_leaf=10,
+                    n_estimators=300,
+                    max_depth=20,
+                    min_samples_leaf=5,
                     n_jobs=-1,
                     random_state=RANDOM_STATE,
                 ),

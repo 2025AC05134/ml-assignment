@@ -20,7 +20,7 @@
 9. [How to Reproduce](#how-to-reproduce)
 10. [Streamlit Cloud Deployment](#streamlit-cloud-deployment)
 11. [Live Streamlit App Link](#live-streamlit-app-link)
-12. [BITS Virtual Lab Screenshot](#bits-virtual-lab-screenshot)
+12. [BITS Virtual Lab Screenshots](#bits-virtual-lab-screenshots)
 13. [Final Submission Checklist](#final-submission-checklist)
 
 ---
@@ -90,7 +90,7 @@ All five models were trained on the **same** training split and evaluated on the
 | Decision Tree            | Depth-limited (`max_depth=12`, `min_samples_leaf=20`) tree generalises well — accuracy (0.8572) rivals ensembles. However its AUC (0.9019) is slightly below Logistic Regression, reflecting the piecewise-constant probability estimates typical of trees. |
 | KNN                      | Distance-weighted KNN with `k=25` performs respectably (Accuracy 0.8461, AUC 0.8927). It has the **best recall among the strong models** (0.6099) but slightly lower precision — expected because KNN in one-hot expanded space can be sensitive to sparse categoricals. |
 | Naive Bayes (Gaussian)   | Weakest overall (Accuracy 0.6204, MCC 0.3866). The feature-independence assumption is violated by strong correlations in the Adult data (e.g. `education` ↔ `education-num`, `relationship` ↔ `marital-status`). It has extreme recall (0.9213) at the cost of precision (0.3794) — it over-predicts the `>50K` class. |
-| Random Forest (Ensemble) | **Best overall** — highest Accuracy (0.8634), AUC (0.9164), Precision (0.7912), F1 (0.6716) and MCC (0.5987). Bagging + random feature subsets handles the mixed numeric / high-cardinality categorical features cleanly. |
+| Random Forest (Ensemble) | **Best overall** — highest Accuracy (0.8634), AUC (0.9164), Precision (0.7912), F1 (0.6716) and MCC (0.5987). Bagging + random feature subsets handles the mixed numeric / high-cardinality categorical features cleanly. Hyperparameters: `n_estimators=300`, `max_depth=20`, `min_samples_leaf=5`. |
 | **Overall Winner**       | **Random Forest** — wins on 5 of 6 metrics and generalises best on this dataset. |
 
 ---
@@ -115,7 +115,7 @@ There is also an in-app **"Assignment compliance mapping"** expander so an evalu
 ## Project Structure
 
 ```text
-solution_2/
+ml-assignment/
 ├── app.py                      # Streamlit UI (entry point)
 ├── streamlit_app.py            # Alternate entry point for Streamlit Cloud
 ├── train_all.py                # Orchestrator - fetch data + train all models + save artefacts
@@ -123,11 +123,12 @@ solution_2/
 ├── README.md                   # This file (matches assignment README structure)
 ├── metrics.csv                 # Comparison table (raw numbers used above)
 ├── test_data.csv               # 20% stratified test split (uploaded in Streamlit app)
+├── .gitignore
 ├── .streamlit/
 │   └── config.toml             # Streamlit theme + server config
-├── data/
-│   ├── adult_full.csv          # Full dataset (regenerated on first run)
-│   └── train_data.csv          # 80% training split (regenerated on first run)
+├── data/                       # (auto-generated on train_all.py run, gitignored)
+│   ├── adult_full.csv          # Full UCI Adult dataset
+│   └── train_data.csv          # 80% training split
 ├── model/                      # Per-model training scripts + saved artefacts
 │   ├── preprocess.py           # Shared ColumnTransformer factory
 │   ├── logistic_regression.py
@@ -135,13 +136,19 @@ solution_2/
 │   ├── knn.py
 │   ├── naive_bayes.py
 │   ├── random_forest.py
-│   ├── logistic_regression.joblib
-│   ├── decision_tree.joblib
-│   ├── knn.joblib
-│   ├── naive_bayes.joblib
-│   └── random_forest.joblib
-└── screenshots/
-    └── bits_lab.png            # BITS Virtual Lab screenshot (add before submission)
+│   ├── logistic_regression.joblib   # compress=3, < 10 KB
+│   ├── decision_tree.joblib         # compress=3, ~ 25 KB
+│   ├── knn.joblib                   # compress=3, ~ 2 MB
+│   ├── naive_bayes.joblib           # compress=3, ~ 6 KB
+│   └── random_forest.joblib         # compress=3, ~ 4 MB
+└── screenshots/                # BITS Virtual Lab execution screenshots
+    ├── bits_lab_01_overview.png
+    ├── bits_lab_02_all_models.png
+    ├── bits_lab_03_logistic_regression.png
+    ├── bits_lab_04_decision_tree.png
+    ├── bits_lab_05_knn.png
+    ├── bits_lab_06_naive_bayes.png
+    └── bits_lab_07_random_forest.png
 ```
 
 ---
@@ -227,15 +234,44 @@ Deploy from: [https://share.streamlit.io/new](https://share.streamlit.io/new)
 
 ## Live Streamlit App Link
 
-- **Live app URL:** `https://<your-app>.streamlit.app` *(replace after deployment)*
+- **Live app URL:** [https://ktj8kplauyhkepkvphpk2r.streamlit.app/](https://ktj8kplauyhkepkvphpk2r.streamlit.app/)
+- Deployed on **Streamlit Community Cloud** (free tier)
+- Public — no authentication required
+- The app starts instantly because the pre-trained `.joblib` pipelines are committed in `model/`
 
 ---
 
-## BITS Virtual Lab Screenshot
+## BITS Virtual Lab Screenshots
 
-The assignment was executed on the BITS Virtual Lab. The screenshot below confirms this and is embedded in the final submission PDF as required by the assignment (1 mark).
+The assignment was executed on the **BITS Virtual Lab**. The screenshots below (captured on 2026-08-08, 03:02–03:03 IST) show the live Streamlit app running inside the BITS Lab desktop environment. This satisfies the assignment's "execution on BITS Virtual Lab" requirement (**1 mark**).
 
-`screenshots/bits_lab.png`
+### 1. Overview — CSV upload + sidebar model selection
+
+![BITS Lab - overview](screenshots/bits_lab_01_overview.png)
+
+### 2. All-models comparison — metrics table + side-by-side confusion matrices
+
+![BITS Lab - all models comparison](screenshots/bits_lab_02_all_models.png)
+
+### 3. Single-model view — Logistic Regression
+
+![BITS Lab - Logistic Regression](screenshots/bits_lab_03_logistic_regression.png)
+
+### 4. Single-model view — Decision Tree
+
+![BITS Lab - Decision Tree](screenshots/bits_lab_04_decision_tree.png)
+
+### 5. Single-model view — KNN
+
+![BITS Lab - KNN](screenshots/bits_lab_05_knn.png)
+
+### 6. Single-model view — Naive Bayes
+
+![BITS Lab - Naive Bayes](screenshots/bits_lab_06_naive_bayes.png)
+
+### 7. Single-model view — Random Forest
+
+![BITS Lab - Random Forest](screenshots/bits_lab_07_random_forest.png)
 
 ---
 
@@ -246,7 +282,7 @@ The assignment was executed on the BITS Virtual Lab. The screenshot below confir
 - [x] All 5 required models implemented on the same dataset
 - [x] All 6 evaluation metrics (Accuracy, AUC, Precision, Recall, F1, MCC) reported per model
 - [x] Streamlit app supports: CSV upload, model dropdown, metrics display, confusion matrix + classification report
-- [ ] GitHub repo link filled in above and reachable
-- [ ] Live Streamlit app link filled in above and reachable
-- [ ] `screenshots/bits_lab.png` captured on BITS Virtual Lab and embedded in the submission PDF
+- [x] GitHub repo link filled in above and reachable — [2025AC05134/ml-assignment](https://github.com/2025AC05134/ml-assignment)
+- [x] Live Streamlit app link filled in above and reachable — [https://ktj8kplauyhkepkvphpk2r.streamlit.app/](https://ktj8kplauyhkepkvphpk2r.streamlit.app/)
+- [x] BITS Virtual Lab screenshots captured (7 images) in `screenshots/` and embedded in this README
 - [ ] Combined submission PDF prepared with GitHub link → Live app link → BITS screenshot → README content (in that exact order, as required by the PDF)
